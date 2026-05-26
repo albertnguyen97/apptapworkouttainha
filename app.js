@@ -1,10 +1,10 @@
 const defaults = [
-  { name: "Nâng hông", image: "assets/exercises/nang-hong.webp" },
-  { name: "Chùng chân", image: "assets/exercises/chung-chan.webp" },
-  { name: "Đứng tấn", image: "assets/exercises/dung-tan.webp" },
-  { name: "Rowing xoay chân", image: "assets/exercises/rowing.webp" },
-  { name: "Nâng cao đùi", image: "assets/exercises/nang-cao-dui.webp" },
-  { name: "Đạp xe", image: "assets/exercises/dap-xe.webp" }
+  { name: "Nâng hông", image: "assets/exercises/nang-hong.jpg" },
+  { name: "Chùng chân", image: "assets/exercises/chung-chan.jpg" },
+  { name: "Đứng tấn", image: "assets/exercises/dung-tan.jpg" },
+  { name: "Rowing xoay chân", image: "assets/exercises/rowing.jpg" },
+  { name: "Nâng cao đùi", image: "assets/exercises/nang-cao-dui.jpg" },
+  { name: "Đạp xe", image: "assets/exercises/dap-xe.jpg" }
 ];
 
 const state = {
