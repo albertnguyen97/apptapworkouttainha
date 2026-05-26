@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Glute Workout Timer</title>
+    <title>Đồng hồ tập mông và chân</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="app">
-      <section class="timer-panel" aria-label="Workout timer">
+      <section class="timer-panel" aria-label="Đồng hồ tập luyện">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Workout tai nha</p>
-            <h1>Glute & Legs</h1>
+            <p class="eyebrow">Tập tại nhà</p>
+            <h1>Mông & Chân</h1>
           </div>
           <div class="session-chip">
             <span id="totalTimeLabel">15:00</span>
-            <small>tong buoi</small>
+            <small>tổng buổi</small>
           </div>
         </div>
 
         <div class="phase-row">
-          <span id="phaseLabel" class="phase work">San sang</span>
-          <span id="roundLabel">Vong 1 / 1</span>
+          <span id="phaseLabel" class="phase work">Sẵn sàng</span>
+          <span id="roundLabel">Vòng 1 / 1</span>
         </div>
 
         <div class="countdown" aria-live="polite">
@@ -32,53 +32,53 @@
           </svg>
           <div class="time-stack">
             <span id="timeLeft">00:30</span>
-            <strong id="currentExercise">Glute bridge</strong>
-            <small id="nextExercise">Tiep theo: Lunges</small>
+            <strong id="currentExercise">Nâng hông</strong>
+            <small id="nextExercise">Tiếp theo: Chùng chân</small>
           </div>
         </div>
 
-        <div class="controls" aria-label="Timer controls">
-          <button id="prevBtn" class="icon-btn" type="button" title="Bai truoc">‹</button>
-          <button id="startPauseBtn" class="primary-btn" type="button">Bat dau</button>
-          <button id="nextBtn" class="icon-btn" type="button" title="Bai tiep">›</button>
+        <div class="controls" aria-label="Điều khiển đồng hồ">
+          <button id="prevBtn" class="icon-btn" type="button" title="Bài trước">‹</button>
+          <button id="startPauseBtn" class="primary-btn" type="button">Bắt đầu</button>
+          <button id="nextBtn" class="icon-btn" type="button" title="Bài tiếp">›</button>
           <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
         </div>
 
         <div class="timeline">
           <div class="timeline-fill" id="timelineFill"></div>
         </div>
-        <p id="sessionSummary" class="summary">6 bai tap, 3 vong, vua du 15 phut.</p>
+        <p id="sessionSummary" class="summary">6 bài tập, vừa đủ 15 phút.</p>
       </section>
 
-      <aside class="settings" aria-label="Workout settings">
+      <aside class="settings" aria-label="Tùy chỉnh buổi tập">
         <div class="settings-header">
-          <h2>Tuy chinh</h2>
-          <button id="addExerciseBtn" class="secondary-btn compact" type="button">+ Bai tap</button>
+          <h2>Tùy chỉnh</h2>
+          <button id="addExerciseBtn" class="secondary-btn compact" type="button">+ Bài tập</button>
         </div>
 
         <div class="grid-settings">
           <label>
-            Tap
+            Tập
             <input id="workSeconds" type="number" min="5" max="300" step="5" value="30">
-            <span>giay</span>
+            <span>giây</span>
           </label>
           <label>
-            Nghi
+            Nghỉ
             <input id="restSeconds" type="number" min="0" max="180" step="5" value="15">
-            <span>giay</span>
+            <span>giây</span>
           </label>
           <label>
-            Tong
+            Tổng
             <input id="totalMinutes" type="number" min="1" max="120" step="1" value="15">
-            <span>phut</span>
+            <span>phút</span>
           </label>
         </div>
 
         <div class="exercise-list" id="exerciseList"></div>
 
         <div class="preset-actions">
-          <button id="restoreBtn" class="secondary-btn" type="button">Khoi phuc bai mac dinh</button>
-          <button id="applyBtn" class="primary-btn small" type="button">Ap dung</button>
+          <button id="restoreBtn" class="secondary-btn" type="button">Khôi phục bài mặc định</button>
+          <button id="applyBtn" class="primary-btn small" type="button">Áp dụng</button>
         </div>
       </aside>
     </main>

@@ -1,10 +1,10 @@
-# Glute Workout Timer
+# Đồng hồ tập mông và chân
 
-Webapp tinh de tap theo interval tai nha.
+Webapp tĩnh để tập theo interval tại nhà.
 
-- Mac dinh: 6 bai tap, 30 giay tap, 15 giay nghi, tong khoang 15 phut.
-- Co the them/xoa/doi ten bai tap.
-- Co the doi thoi gian tap, nghi va tong thoi luong buoi tap.
-- Bam Space de bat dau/tam dung, mui ten trai/phai de qua bai.
+- Mặc định: 6 bài tập, 30 giây tập, 15 giây nghỉ, tổng 15 phút.
+- Có thể thêm/xóa/đổi tên bài tập.
+- Có thể đổi thời gian tập, nghỉ và tổng thời lượng buổi tập.
+- Bấm Space để bắt đầu/tạm dừng, mũi tên trái/phải để qua bài.
 
-Mo `index.html` bang trinh duyet de dung.
+Mở `index.html` bằng trình duyệt để dùng.

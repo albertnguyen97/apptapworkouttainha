@@ -1,10 +1,10 @@
 const defaults = [
-  "Glute bridge",
-  "Lunges",
-  "Dung tan",
+  "Nâng hông",
+  "Chùng chân",
+  "Đứng tấn",
   "Rowing",
-  "Nang cao dui",
-  "Dap xe"
+  "Nâng cao đùi",
+  "Đạp xe"
 ];
 
 const state = {
@@ -114,7 +114,7 @@ function renderExerciseList() {
     const input = document.createElement("input");
     input.type = "text";
     input.value = exercise;
-    input.setAttribute("aria-label", `Bai tap ${index + 1}`);
+    input.setAttribute("aria-label", `Bài tập ${index + 1}`);
     input.addEventListener("input", () => {
       state.exercises[index] = input.value;
     });
@@ -122,7 +122,7 @@ function renderExerciseList() {
     const remove = document.createElement("button");
     remove.className = "remove-btn";
     remove.type = "button";
-    remove.title = "Xoa bai tap";
+    remove.title = "Xóa bài tập";
     remove.textContent = "×";
     remove.addEventListener("click", () => {
       state.exercises.splice(index, 1);
@@ -162,19 +162,19 @@ function updateDisplay() {
   const stepProgress = 1 - state.remaining / step.duration;
   const sessionProgress = elapsedSessionSeconds() / totalSessionSeconds();
 
-  els.phaseLabel.textContent = isRest ? "Nghi" : "Tap";
+  els.phaseLabel.textContent = isRest ? "Nghỉ" : "Tập";
   els.phaseLabel.classList.toggle("rest", isRest);
   els.phaseLabel.classList.toggle("work", !isRest);
-  els.roundLabel.textContent = `Vong ${step.round} / ${totalRounds}`;
+  els.roundLabel.textContent = `Vòng ${step.round} / ${totalRounds}`;
   els.timeLeft.textContent = formatTime(state.remaining);
-  els.currentExercise.textContent = isRest ? "Nghi ngan" : step.exercise;
-  els.nextExercise.textContent = `Tiep theo: ${next.type === "rest" ? "Nghi" : next.exercise}`;
+  els.currentExercise.textContent = isRest ? "Nghỉ ngắn" : step.exercise;
+  els.nextExercise.textContent = `Tiếp theo: ${next.type === "rest" ? "Nghỉ" : next.exercise}`;
   els.progressCircle.classList.toggle("rest", isRest);
   els.progressCircle.style.strokeDashoffset = `${circumference * (1 - stepProgress)}`;
   els.timelineFill.style.width = `${Math.min(100, Math.max(0, sessionProgress * 100))}%`;
   els.totalTimeLabel.textContent = formatTime(totalSessionSeconds());
-  els.sessionSummary.textContent = `${state.exercises.length} bai tap, ${totalRounds} vong, tong ${formatTime(totalSessionSeconds())}.`;
-  els.startPauseBtn.textContent = state.running ? "Tam dung" : "Bat dau";
+  els.sessionSummary.textContent = `${state.exercises.length} bài tập, ${totalRounds} vòng, tổng ${formatTime(totalSessionSeconds())}.`;
+  els.startPauseBtn.textContent = state.running ? "Tạm dừng" : "Bắt đầu";
 }
 
 function beep() {
@@ -266,7 +266,7 @@ function applySettings() {
 }
 
 els.addExerciseBtn.addEventListener("click", () => {
-  state.exercises.push("Bai tap moi");
+  state.exercises.push("Bài tập mới");
   renderExerciseList();
 });
 
