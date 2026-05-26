@@ -1,14 +1,14 @@
 const defaults = [
-  "Nâng hông",
-  "Chùng chân",
-  "Đứng tấn",
-  "Rowing",
-  "Nâng cao đùi",
-  "Đạp xe"
+  { name: "Nâng hông", image: "assets/exercises/nang-hong.webp" },
+  { name: "Chùng chân", image: "assets/exercises/chung-chan.webp" },
+  { name: "Đứng tấn", image: "assets/exercises/dung-tan.webp" },
+  { name: "Rowing", image: "assets/exercises/rowing.webp" },
+  { name: "Nâng cao đùi", image: "assets/exercises/nang-cao-dui.webp" },
+  { name: "Đạp xe", image: "assets/exercises/dap-xe.webp" }
 ];
 
 const state = {
-  exercises: [...defaults],
+  exercises: defaults.map((exercise) => ({ ...exercise })),
   workSeconds: 30,
   restSeconds: 15,
   totalMinutes: 15,
@@ -36,6 +36,7 @@ const els = {
   roundLabel: document.querySelector("#roundLabel"),
   timeLeft: document.querySelector("#timeLeft"),
   currentExercise: document.querySelector("#currentExercise"),
+  exerciseImage: document.querySelector("#exerciseImage"),
   nextExercise: document.querySelector("#nextExercise"),
   progressCircle: document.querySelector("#progressCircle"),
   timelineFill: document.querySelector("#timelineFill"),
@@ -60,8 +61,13 @@ function formatTime(totalSeconds) {
 }
 
 function buildSteps() {
-  const exerciseNames = state.exercises.map((name) => name.trim()).filter(Boolean);
-  state.exercises = exerciseNames.length ? exerciseNames : [...defaults];
+  const exercises = state.exercises
+    .map((exercise, index) => ({
+      name: exercise.name.trim(),
+      image: exercise.image || defaults[index % defaults.length].image
+    }))
+    .filter((exercise) => exercise.name);
+  state.exercises = exercises.length ? exercises : defaults.map((exercise) => ({ ...exercise }));
 
   const targetSeconds = state.totalMinutes * 60;
   const steps = [];
@@ -82,7 +88,8 @@ function buildSteps() {
       const duration = Math.min(segment.duration, targetSeconds - elapsed);
       steps.push({
         type: segment.type,
-        exercise,
+        exercise: exercise.name,
+        image: exercise.image,
         duration,
         round,
         exerciseIndex
@@ -111,12 +118,18 @@ function renderExerciseList() {
     const order = document.createElement("span");
     order.textContent = index + 1;
 
+    const thumb = document.createElement("img");
+    thumb.className = "exercise-thumb";
+    thumb.src = exercise.image;
+    thumb.alt = `Minh họa ${exercise.name}`;
+
     const input = document.createElement("input");
     input.type = "text";
-    input.value = exercise;
+    input.value = exercise.name;
     input.setAttribute("aria-label", `Bài tập ${index + 1}`);
     input.addEventListener("input", () => {
-      state.exercises[index] = input.value;
+      state.exercises[index].name = input.value;
+      thumb.alt = `Minh họa ${input.value}`;
     });
 
     const remove = document.createElement("button");
@@ -126,12 +139,12 @@ function renderExerciseList() {
     remove.textContent = "×";
     remove.addEventListener("click", () => {
       state.exercises.splice(index, 1);
-      if (!state.exercises.length) state.exercises = [...defaults];
+      if (!state.exercises.length) state.exercises = defaults.map((item) => ({ ...item }));
       renderExerciseList();
       applySettings();
     });
 
-    item.append(order, input, remove);
+    item.append(order, thumb, input, remove);
     els.exerciseList.append(item);
   });
 }
@@ -168,6 +181,9 @@ function updateDisplay() {
   els.roundLabel.textContent = `Vòng ${step.round} / ${totalRounds}`;
   els.timeLeft.textContent = formatTime(state.remaining);
   els.currentExercise.textContent = isRest ? "Nghỉ ngắn" : step.exercise;
+  els.exerciseImage.src = step.image;
+  els.exerciseImage.alt = `Minh họa bài ${step.exercise}`;
+  els.exerciseImage.classList.toggle("resting", isRest);
   els.nextExercise.textContent = `Tiếp theo: ${next.type === "rest" ? "Nghỉ" : next.exercise}`;
   els.progressCircle.classList.toggle("rest", isRest);
   els.progressCircle.style.strokeDashoffset = `${circumference * (1 - stepProgress)}`;
@@ -253,8 +269,11 @@ function applySettings() {
   state.restSeconds = clampNumber(els.restSeconds.value, 0, 180, 15);
   state.totalMinutes = clampNumber(els.totalMinutes.value, 1, 120, 15);
   state.exercises = [...els.exerciseList.querySelectorAll("input")]
-    .map((input) => input.value.trim())
-    .filter(Boolean);
+    .map((input, index) => ({
+      name: input.value.trim(),
+      image: state.exercises[index]?.image || defaults[index % defaults.length].image
+    }))
+    .filter((exercise) => exercise.name);
 
   els.workSeconds.value = state.workSeconds;
   els.restSeconds.value = state.restSeconds;
@@ -266,12 +285,13 @@ function applySettings() {
 }
 
 els.addExerciseBtn.addEventListener("click", () => {
-  state.exercises.push("Bài tập mới");
+  const fallback = defaults[state.exercises.length % defaults.length].image;
+  state.exercises.push({ name: "Bài tập mới", image: fallback });
   renderExerciseList();
 });
 
 els.restoreBtn.addEventListener("click", () => {
-  state.exercises = [...defaults];
+  state.exercises = defaults.map((exercise) => ({ ...exercise }));
   renderExerciseList();
   applySettings();
 });

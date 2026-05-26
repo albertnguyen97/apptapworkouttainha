@@ -184,12 +184,27 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-align: center;
 }
 
+.exercise-hero {
+  width: min(48%, 230px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8faf9;
+  box-shadow: 0 12px 32px rgba(23, 33, 28, 0.12);
+}
+
+.exercise-hero.resting {
+  filter: saturate(0.72);
+  opacity: 0.78;
+}
+
 #timeLeft {
-  font-size: clamp(4rem, 15vw, 9rem);
+  font-size: clamp(3.5rem, 12vw, 7.2rem);
   line-height: 0.9;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
@@ -321,13 +336,22 @@ input:focus-visible {
 
 .exercise-item {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 38px;
+  grid-template-columns: 28px 52px minmax(0, 1fr) 38px;
   align-items: center;
   gap: 8px;
   padding: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
+}
+
+.exercise-thumb {
+  width: 52px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #f8faf9;
 }
 
 .exercise-item span {
