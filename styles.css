@@ -297,6 +297,33 @@ input:focus-visible {
   padding: 22px;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #eef3f0;
+}
+
+.mode-btn {
+  min-height: 40px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.mode-btn.active {
+  color: #fff;
+  background: var(--accent);
+}
+
 .grid-settings {
   margin: 20px 0;
   display: grid;
@@ -379,6 +406,55 @@ input:focus-visible {
 
 .preset-actions {
   margin-top: 16px;
+}
+
+.pelvic-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.pelvic-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.pelvic-name {
+  width: 100%;
+  height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f5f7f3;
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.pelvic-item label {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 850;
+}
+
+.pelvic-item input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fbfcfb;
+  color: var(--ink);
+  font-weight: 900;
 }
 
 @media (max-width: 880px) {

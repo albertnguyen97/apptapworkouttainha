@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Đồng hồ tập mông và chân</title>
+    <title>Đồng hồ tập tại nhà</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -11,8 +11,8 @@
       <section class="timer-panel" aria-label="Đồng hồ tập luyện">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Tập tại nhà</p>
-            <h1>Mông & Chân</h1>
+            <p id="modeEyebrow" class="eyebrow">Tập tại nhà</p>
+            <h1 id="modeTitle">Mông & Chân</h1>
           </div>
           <div class="session-chip">
             <span id="totalTimeLabel">15:00</span>
@@ -52,30 +52,41 @@
       </section>
 
       <aside class="settings" aria-label="Tùy chỉnh buổi tập">
+        <div class="mode-switch" aria-label="Chọn màn tập">
+          <button id="workoutModeBtn" class="mode-btn active" type="button">Mông & Chân</button>
+          <button id="pelvicModeBtn" class="mode-btn" type="button">Cơ sàn chậu</button>
+        </div>
+
         <div class="settings-header">
-          <h2>Tùy chỉnh</h2>
+          <h2 id="settingsTitle">Tùy chỉnh</h2>
           <button id="addExerciseBtn" class="secondary-btn compact" type="button">+ Bài tập</button>
         </div>
 
-        <div class="grid-settings">
-          <label>
-            Tập
-            <input id="workSeconds" type="number" min="5" max="300" step="5" value="30">
-            <span>giây</span>
-          </label>
-          <label>
-            Nghỉ
-            <input id="restSeconds" type="number" min="0" max="180" step="5" value="15">
-            <span>giây</span>
-          </label>
-          <label>
-            Tổng
-            <input id="totalMinutes" type="number" min="1" max="120" step="1" value="15">
-            <span>phút</span>
-          </label>
+        <div id="workoutSettings" class="settings-section">
+          <div class="grid-settings">
+            <label>
+              Tập
+              <input id="workSeconds" type="number" min="5" max="300" step="5" value="30">
+              <span>giây</span>
+            </label>
+            <label>
+              Nghỉ
+              <input id="restSeconds" type="number" min="0" max="180" step="5" value="15">
+              <span>giây</span>
+            </label>
+            <label>
+              Tổng
+              <input id="totalMinutes" type="number" min="1" max="120" step="1" value="15">
+              <span>phút</span>
+            </label>
+          </div>
+
+          <div class="exercise-list" id="exerciseList"></div>
         </div>
 
-        <div class="exercise-list" id="exerciseList"></div>
+        <div id="pelvicSettings" class="settings-section hidden">
+          <div class="pelvic-list" id="pelvicList"></div>
+        </div>
 
         <div class="preset-actions">
           <button id="restoreBtn" class="secondary-btn" type="button">Khôi phục bài mặc định</button>
@@ -83,6 +94,27 @@
         </div>
       </aside>
     </main>
+
+    <template id="pelvicTemplate">
+      <div class="pelvic-item">
+        <input class="pelvic-name" type="text" aria-label="Tên bài tập">
+        <label>
+          Siết
+          <input class="pelvic-squeeze" type="number" min="1" max="30" step="1">
+          <span>giây</span>
+        </label>
+        <label>
+          Thả
+          <input class="pelvic-release" type="number" min="1" max="30" step="1">
+          <span>giây</span>
+        </label>
+        <label>
+          Lặp
+          <input class="pelvic-reps" type="number" min="1" max="200" step="1">
+          <span>lần</span>
+        </label>
+      </div>
+    </template>
 
     <script src="app.js"></script>
   </body>
