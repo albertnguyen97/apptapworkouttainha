@@ -8,8 +8,14 @@ const defaults = [
 ];
 
 const pelvicDefaults = [
-  { name: "Siết/thả nhanh", squeezeSeconds: 1, releaseSeconds: 1, reps: 30 },
-  { name: "Siết/thả chậm", squeezeSeconds: 2, releaseSeconds: 2, reps: 20 }
+  {
+    name: "Kegel",
+    squeezeSeconds: 1,
+    releaseSeconds: 1,
+    workBlockSeconds: 30,
+    restSeconds: 10,
+    totalMinutes: 3
+  }
 ];
 
 const state = {
@@ -136,30 +142,63 @@ function buildPelvicSteps() {
       name: routine.name.trim(),
       squeezeSeconds: clampNumber(routine.squeezeSeconds, 1, 30, 1),
       releaseSeconds: clampNumber(routine.releaseSeconds, 1, 30, 1),
-      reps: clampNumber(routine.reps, 1, 200, 20)
+      workBlockSeconds: clampNumber(routine.workBlockSeconds, 2, 300, 30),
+      restSeconds: clampNumber(routine.restSeconds, 0, 300, 10),
+      totalMinutes: clampNumber(routine.totalMinutes, 1, 60, 3)
     }))
     .filter((routine) => routine.name);
   state.pelvicExercises = routines.length ? routines : pelvicDefaults.map((routine) => ({ ...routine }));
 
   const steps = [];
   state.pelvicExercises.forEach((routine, routineIndex) => {
-    for (let rep = 1; rep <= routine.reps; rep += 1) {
-      steps.push({
-        type: "squeeze",
-        exercise: routine.name,
-        duration: routine.squeezeSeconds,
-        round: rep,
-        reps: routine.reps,
-        routineIndex
-      });
-      steps.push({
-        type: "release",
-        exercise: routine.name,
-        duration: routine.releaseSeconds,
-        round: rep,
-        reps: routine.reps,
-        routineIndex
-      });
+    const targetSeconds = routine.totalMinutes * 60;
+    let elapsed = 0;
+    let block = 1;
+
+    while (elapsed < targetSeconds) {
+      let blockElapsed = 0;
+
+      while (blockElapsed < routine.workBlockSeconds && elapsed < targetSeconds) {
+        const squeezeDuration = Math.min(routine.squeezeSeconds, routine.workBlockSeconds - blockElapsed, targetSeconds - elapsed);
+        if (squeezeDuration > 0) {
+          steps.push({
+            type: "squeeze",
+            exercise: routine.name,
+            duration: squeezeDuration,
+            round: block,
+            routineIndex
+          });
+          elapsed += squeezeDuration;
+          blockElapsed += squeezeDuration;
+        }
+
+        const releaseDuration = Math.min(routine.releaseSeconds, routine.workBlockSeconds - blockElapsed, targetSeconds - elapsed);
+        if (releaseDuration > 0) {
+          steps.push({
+            type: "release",
+            exercise: routine.name,
+            duration: releaseDuration,
+            round: block,
+            routineIndex
+          });
+          elapsed += releaseDuration;
+          blockElapsed += releaseDuration;
+        }
+      }
+
+      if (routine.restSeconds > 0 && elapsed < targetSeconds) {
+        const restDuration = Math.min(routine.restSeconds, targetSeconds - elapsed);
+        steps.push({
+          type: "block-rest",
+          exercise: routine.name,
+          duration: restDuration,
+          round: block,
+          routineIndex
+        });
+        elapsed += restDuration;
+      }
+
+      block += 1;
     }
   });
 
@@ -215,12 +254,18 @@ function renderPelvicList() {
     const name = item.querySelector(".pelvic-name");
     const squeeze = item.querySelector(".pelvic-squeeze");
     const release = item.querySelector(".pelvic-release");
+    const workBlock = item.querySelector(".pelvic-work-block");
+    const rest = item.querySelector(".pelvic-rest");
+    const total = item.querySelector(".pelvic-total");
     const reps = item.querySelector(".pelvic-reps");
 
     name.value = routine.name;
     squeeze.value = routine.squeezeSeconds;
     release.value = routine.releaseSeconds;
-    reps.value = routine.reps;
+    workBlock.value = routine.workBlockSeconds;
+    rest.value = routine.restSeconds;
+    total.value = routine.totalMinutes;
+    reps.value = Math.ceil((routine.totalMinutes * 60) / (routine.workBlockSeconds + routine.restSeconds));
 
     name.addEventListener("input", () => {
       state.pelvicExercises[index].name = name.value;
@@ -231,8 +276,17 @@ function renderPelvicList() {
     release.addEventListener("input", () => {
       state.pelvicExercises[index].releaseSeconds = release.value;
     });
-    reps.addEventListener("input", () => {
-      state.pelvicExercises[index].reps = reps.value;
+    workBlock.addEventListener("input", () => {
+      state.pelvicExercises[index].workBlockSeconds = workBlock.value;
+      reps.value = Math.ceil((Number(total.value) * 60) / (Number(workBlock.value) + Number(rest.value)));
+    });
+    rest.addEventListener("input", () => {
+      state.pelvicExercises[index].restSeconds = rest.value;
+      reps.value = Math.ceil((Number(total.value) * 60) / (Number(workBlock.value) + Number(rest.value)));
+    });
+    total.addEventListener("input", () => {
+      state.pelvicExercises[index].totalMinutes = total.value;
+      reps.value = Math.ceil((Number(total.value) * 60) / (Number(workBlock.value) + Number(rest.value)));
     });
 
     els.pelvicList.append(item);
@@ -260,7 +314,7 @@ function updateDisplay() {
   if (!step) return;
 
   const next = state.steps[state.stepIndex + 1] ?? state.steps[0];
-  const isRest = step.type === "rest" || step.type === "release";
+  const isRest = step.type === "rest" || step.type === "release" || step.type === "block-rest";
   const isPelvic = state.mode === "pelvic";
   const totalRounds = Math.max(...state.steps.map((item) => item.round));
   const stepProgress = 1 - state.remaining / step.duration;
@@ -268,15 +322,17 @@ function updateDisplay() {
 
   els.modeEyebrow.textContent = isPelvic ? "Siết và thả" : "Tập tại nhà";
   els.modeTitle.textContent = isPelvic ? "Cơ sàn chậu" : "Mông & Chân";
-  els.phaseLabel.textContent = isPelvic ? (isRest ? "Thả" : "Siết") : (isRest ? "Nghỉ" : "Tập");
+  els.phaseLabel.textContent = isPelvic
+    ? (step.type === "block-rest" ? "Nghỉ" : (isRest ? "Thả" : "Siết"))
+    : (isRest ? "Nghỉ" : "Tập");
   els.phaseLabel.classList.toggle("rest", isRest);
   els.phaseLabel.classList.toggle("work", !isRest);
   els.roundLabel.textContent = isPelvic
-    ? `Bài ${step.routineIndex + 1} / ${state.pelvicExercises.length} - Lần ${step.round} / ${step.reps}`
+    ? `Block ${step.round} - ${formatTime(elapsedSessionSeconds())} / ${formatTime(totalSessionSeconds())}`
     : `Vòng ${step.round} / ${totalRounds}`;
   els.timeLeft.textContent = formatTime(state.remaining);
   els.currentExercise.textContent = isPelvic
-    ? (isRest ? "Thả lỏng cơ" : "Siết cơ sàn chậu")
+    ? (step.type === "block-rest" ? "Nghỉ giữa block" : (isRest ? "Thả lỏng cơ" : "Siết cơ sàn chậu"))
     : (isRest ? "Nghỉ ngắn" : step.exercise);
   els.exerciseImage.hidden = isPelvic;
   if (!isPelvic) {
@@ -285,7 +341,7 @@ function updateDisplay() {
     els.exerciseImage.classList.toggle("resting", isRest);
   }
   els.nextExercise.textContent = isPelvic
-    ? `${step.exercise} - tiếp theo: ${next.type === "release" ? "Thả" : "Siết"}`
+    ? `${step.exercise} - tiếp theo: ${next.type === "block-rest" ? "Nghỉ" : (next.type === "release" ? "Thả" : "Siết")}`
     : `Tiếp theo: ${next.type === "rest" ? "Nghỉ" : next.exercise}`;
   els.progressCircle.classList.toggle("rest", isRest);
   els.progressCircle.style.strokeDashoffset = `${circumference * (1 - stepProgress)}`;
@@ -375,7 +431,9 @@ function applySettings() {
         name: item.querySelector(".pelvic-name").value.trim(),
         squeezeSeconds: item.querySelector(".pelvic-squeeze").value,
         releaseSeconds: item.querySelector(".pelvic-release").value,
-        reps: item.querySelector(".pelvic-reps").value
+        workBlockSeconds: item.querySelector(".pelvic-work-block").value,
+        restSeconds: item.querySelector(".pelvic-rest").value,
+        totalMinutes: item.querySelector(".pelvic-total").value
       }))
       .filter((routine) => routine.name);
     buildSteps();

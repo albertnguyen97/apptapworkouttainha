@@ -6,7 +6,7 @@ Webapp tĩnh để tập theo interval tại nhà.
 - Có hình minh họa cho từng bài tập mặc định.
 - Có thể thêm/xóa/đổi tên bài tập.
 - Có thể đổi thời gian tập, nghỉ và tổng thời lượng buổi tập.
-- Có màn tập cơ sàn chậu với 2 bài mặc định: 1 giây siết/1 giây thả và 2 giây siết/2 giây thả.
+- Có màn tập cơ sàn chậu: Kegel 3 phút, 30 giây tập theo nhịp 1 giây siết/1 giây thả, nghỉ 10 giây giữa block.
 - Bấm Space để bắt đầu/tạm dừng, mũi tên trái/phải để qua bài.
 
 Mở `index.html` bằng trình duyệt để dùng.
