@@ -2,7 +2,7 @@ const defaults = [
   { name: "Nâng hông", image: "assets/exercises/nang-hong.webp" },
   { name: "Chùng chân", image: "assets/exercises/chung-chan.webp" },
   { name: "Đứng tấn", image: "assets/exercises/dung-tan.webp" },
-  { name: "Rowing", image: "assets/exercises/rowing.webp" },
+  { name: "Rowing xoay chân", image: "assets/exercises/rowing.webp" },
   { name: "Nâng cao đùi", image: "assets/exercises/nang-cao-dui.webp" },
   { name: "Đạp xe", image: "assets/exercises/dap-xe.webp" }
 ];
