@@ -1,0 +1,404 @@
+:root {
+  --bg: #f5f7f3;
+  --ink: #17211c;
+  --muted: #68736d;
+  --panel: #ffffff;
+  --line: #d9e0dc;
+  --work: #1f8f68;
+  --rest: #d9812b;
+  --accent: #124f7a;
+  --danger: #b64040;
+  --shadow: 0 24px 70px rgba(23, 33, 28, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(31, 143, 104, 0.13), transparent 32%),
+    linear-gradient(315deg, rgba(18, 79, 122, 0.14), transparent 36%),
+    var(--bg);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app {
+  width: min(1180px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
+  gap: 22px;
+  align-items: center;
+}
+
+.timer-panel,
+.settings {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(217, 224, 220, 0.9);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.timer-panel {
+  padding: clamp(20px, 4vw, 42px);
+}
+
+.topbar,
+.phase-row,
+.settings-header,
+.preset-actions,
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+.topbar,
+.phase-row,
+.settings-header,
+.preset-actions {
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--work);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 7vw, 5.2rem);
+  line-height: 0.94;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+.session-chip {
+  min-width: 104px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-align: center;
+  background: #f9fbfa;
+}
+
+.session-chip span {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 850;
+}
+
+.session-chip small,
+.time-stack small,
+.summary,
+.grid-settings span,
+.exercise-item span {
+  color: var(--muted);
+}
+
+.phase-row {
+  margin-top: 28px;
+}
+
+.phase {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 800;
+  background: var(--work);
+}
+
+.phase.rest {
+  background: var(--rest);
+}
+
+#roundLabel {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.countdown {
+  position: relative;
+  width: min(560px, 100%);
+  aspect-ratio: 1;
+  margin: 22px auto 20px;
+  display: grid;
+  place-items: center;
+}
+
+.progress-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.track,
+.progress {
+  fill: none;
+  stroke-width: 13;
+}
+
+.track {
+  stroke: #e5ebe8;
+}
+
+.progress {
+  stroke: var(--work);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.2s linear, stroke 0.2s ease;
+}
+
+.progress.rest {
+  stroke: var(--rest);
+}
+
+.time-stack {
+  width: 76%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+#timeLeft {
+  font-size: clamp(4rem, 15vw, 9rem);
+  line-height: 0.9;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+#currentExercise {
+  max-width: 100%;
+  font-size: clamp(1.4rem, 4vw, 2.45rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+#nextExercise {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.controls {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 850;
+  color: var(--ink);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(18, 79, 122, 0.28);
+  outline-offset: 2px;
+}
+
+.primary-btn {
+  min-width: 146px;
+  padding: 0 22px;
+  color: #fff;
+  background: var(--accent);
+}
+
+.primary-btn.small {
+  min-width: 106px;
+}
+
+.secondary-btn {
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  background: #f8faf9;
+}
+
+.secondary-btn.compact {
+  min-height: 38px;
+  padding: 0 12px;
+}
+
+.icon-btn {
+  width: 50px;
+  font-size: 2rem;
+  color: #fff;
+  background: var(--work);
+}
+
+.timeline {
+  height: 10px;
+  margin-top: 24px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5ebe8;
+}
+
+.timeline-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--work), var(--accent));
+  transition: width 0.2s linear;
+}
+
+.summary {
+  margin: 12px 0 0;
+  text-align: center;
+  font-weight: 700;
+}
+
+.settings {
+  padding: 22px;
+}
+
+.grid-settings {
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.grid-settings label {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfb;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.grid-settings input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.exercise-list {
+  display: grid;
+  gap: 8px;
+  max-height: min(48vh, 520px);
+  overflow: auto;
+  padding-right: 3px;
+}
+
+.exercise-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.exercise-item span {
+  font-weight: 900;
+  text-align: center;
+}
+
+.exercise-item input {
+  min-width: 0;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: #f5f7f3;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.remove-btn {
+  width: 38px;
+  min-height: 38px;
+  color: var(--danger);
+  background: #fff2f2;
+}
+
+.preset-actions {
+  margin-top: 16px;
+}
+
+@media (max-width: 880px) {
+  .app {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .settings {
+    order: -1;
+  }
+
+  .exercise-list {
+    max-height: 320px;
+  }
+}
+
+@media (max-width: 520px) {
+  .app {
+    width: min(100% - 20px, 1180px);
+    padding: 10px 0 18px;
+    gap: 10px;
+  }
+
+  .timer-panel,
+  .settings {
+    padding: 16px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .session-chip {
+    min-width: 86px;
+    padding: 9px 10px;
+  }
+
+  .grid-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-btn {
+    flex: 1 1 160px;
+  }
+}

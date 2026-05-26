@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Glute Workout Timer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="timer-panel" aria-label="Workout timer">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Workout tai nha</p>
+            <h1>Glute & Legs</h1>
+          </div>
+          <div class="session-chip">
+            <span id="totalTimeLabel">15:00</span>
+            <small>tong buoi</small>
+          </div>
+        </div>
+
+        <div class="phase-row">
+          <span id="phaseLabel" class="phase work">San sang</span>
+          <span id="roundLabel">Vong 1 / 1</span>
+        </div>
+
+        <div class="countdown" aria-live="polite">
+          <svg class="progress-ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle class="track" cx="110" cy="110" r="98"></circle>
+            <circle id="progressCircle" class="progress" cx="110" cy="110" r="98"></circle>
+          </svg>
+          <div class="time-stack">
+            <span id="timeLeft">00:30</span>
+            <strong id="currentExercise">Glute bridge</strong>
+            <small id="nextExercise">Tiep theo: Lunges</small>
+          </div>
+        </div>
+
+        <div class="controls" aria-label="Timer controls">
+          <button id="prevBtn" class="icon-btn" type="button" title="Bai truoc">‹</button>
+          <button id="startPauseBtn" class="primary-btn" type="button">Bat dau</button>
+          <button id="nextBtn" class="icon-btn" type="button" title="Bai tiep">›</button>
+          <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-fill" id="timelineFill"></div>
+        </div>
+        <p id="sessionSummary" class="summary">6 bai tap, 3 vong, vua du 15 phut.</p>
+      </section>
+
+      <aside class="settings" aria-label="Workout settings">
+        <div class="settings-header">
+          <h2>Tuy chinh</h2>
+          <button id="addExerciseBtn" class="secondary-btn compact" type="button">+ Bai tap</button>
+        </div>
+
+        <div class="grid-settings">
+          <label>
+            Tap
+            <input id="workSeconds" type="number" min="5" max="300" step="5" value="30">
+            <span>giay</span>
+          </label>
+          <label>
+            Nghi
+            <input id="restSeconds" type="number" min="0" max="180" step="5" value="15">
+            <span>giay</span>
+          </label>
+          <label>
+            Tong
+            <input id="totalMinutes" type="number" min="1" max="120" step="1" value="15">
+            <span>phut</span>
+          </label>
+        </div>
+
+        <div class="exercise-list" id="exerciseList"></div>
+
+        <div class="preset-actions">
+          <button id="restoreBtn" class="secondary-btn" type="button">Khoi phuc bai mac dinh</button>
+          <button id="applyBtn" class="primary-btn small" type="button">Ap dung</button>
+        </div>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
