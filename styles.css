@@ -363,7 +363,7 @@ input:focus-visible {
 
 .exercise-item {
   display: grid;
-  grid-template-columns: 28px 52px minmax(0, 1fr) 38px;
+  grid-template-columns: 28px 52px minmax(0, 1fr) 34px 34px 38px;
   align-items: center;
   gap: 8px;
   padding: 8px;
@@ -386,6 +386,18 @@ input:focus-visible {
   text-align: center;
 }
 
+.exercise-fields {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.exercise-image-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  gap: 6px;
+}
+
 .exercise-item input {
   min-width: 0;
   height: 38px;
@@ -397,9 +409,49 @@ input:focus-visible {
   font-weight: 750;
 }
 
-.remove-btn {
-  width: 38px;
+.exercise-image-input {
+  font-size: 0.82rem;
+}
+
+.file-btn {
+  position: relative;
+  display: grid;
   min-height: 38px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8faf9;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.file-btn input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.move-btn,
+.remove-btn {
+  width: 100%;
+  min-height: 34px;
+}
+
+.move-btn {
+  color: var(--accent);
+  background: #eef6fa;
+}
+
+.move-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.remove-btn {
   color: var(--danger);
   background: #fff2f2;
 }
@@ -471,6 +523,10 @@ input:focus-visible {
   .exercise-list {
     max-height: 320px;
   }
+
+  .exercise-item {
+    grid-template-columns: 24px 48px minmax(0, 1fr) 34px 34px 38px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -500,5 +556,14 @@ input:focus-visible {
 
   .primary-btn {
     flex: 1 1 160px;
+  }
+
+  .exercise-item {
+    grid-template-columns: 24px 48px minmax(0, 1fr);
+  }
+
+  .move-btn,
+  .remove-btn {
+    min-height: 36px;
   }
 }

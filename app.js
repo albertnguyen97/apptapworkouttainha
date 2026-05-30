@@ -1,11 +1,59 @@
-const defaults = [
-  { name: "Nâng hông", image: "assets/exercises/nang-hong.jpg" },
-  { name: "Chùng chân", image: "assets/exercises/chung-chan.jpg" },
-  { name: "Đứng tấn", image: "assets/exercises/dung-tan.jpg" },
-  { name: "Rowing xoay chân", image: "assets/exercises/rowing.jpg" },
-  { name: "Nâng cao đùi", image: "assets/exercises/nang-cao-dui.jpg" },
-  { name: "Đạp xe", image: "assets/exercises/dap-xe.jpg" }
+const seedImages = [
+  "assets/exercises/nang-hong.jpg",
+  "assets/exercises/chung-chan.jpg",
+  "assets/exercises/dung-tan.jpg",
+  "assets/exercises/rowing.jpg",
+  "assets/exercises/nang-cao-dui.jpg",
+  "assets/exercises/dap-xe.jpg"
 ];
+
+const defaultNames = [
+  "Nâng hông",
+  "Chùng chân",
+  "Đứng tấn",
+  "Rowing xoay chân",
+  "Nâng cao đùi",
+  "Đạp xe",
+  "Squat",
+  "Lunge ngược",
+  "Donkey kick",
+  "Fire hydrant",
+  "Wall sit",
+  "Calf raise"
+];
+
+function createExerciseImage(name, index = 0) {
+  const colors = [
+    ["#1f8f68", "#e9f6f1"],
+    ["#124f7a", "#eaf3f8"],
+    ["#d9812b", "#fff3e6"],
+    ["#7b4bb3", "#f3eef9"],
+    ["#b64040", "#fff0f0"],
+    ["#4f6f52", "#edf5ee"]
+  ];
+  const [accent, bg] = colors[index % colors.length];
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+      <rect width="240" height="240" rx="18" fill="${bg}"/>
+      <circle cx="120" cy="82" r="26" fill="${accent}" opacity="0.88"/>
+      <path d="M76 184c10-38 28-58 52-58 22 0 40 20 52 58" fill="none" stroke="${accent}" stroke-width="18" stroke-linecap="round"/>
+      <path d="M72 132h96M88 104l-28 34M152 104l28 34" fill="none" stroke="${accent}" stroke-width="14" stroke-linecap="round"/>
+      <text x="120" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="${accent}">${initials || "BT"}</text>
+    </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+const defaults = defaultNames.map((name, index) => ({
+  name,
+  image: seedImages[index] || createExerciseImage(name, index)
+}));
 
 const pelvicDefaults = [
   {
@@ -136,6 +184,27 @@ function buildSteps() {
   state.remaining = state.steps[0]?.duration ?? state.workSeconds;
 }
 
+function fallbackImage(index, name = "Bài tập mới") {
+  return defaults[index % defaults.length]?.image || createExerciseImage(name, index);
+}
+
+function swapExercises(fromIndex, toIndex) {
+  if (toIndex < 0 || toIndex >= state.exercises.length) return;
+  stopTimer();
+  const [exercise] = state.exercises.splice(fromIndex, 1);
+  state.exercises.splice(toIndex, 0, exercise);
+  renderExerciseList();
+  buildSteps();
+  updateDisplay();
+}
+
+function updateExerciseImage(index, image, thumb, imageInput) {
+  state.exercises[index].image = image || fallbackImage(index, state.exercises[index].name);
+  thumb.src = state.exercises[index].image;
+  imageInput.value = state.exercises[index].image.startsWith("data:") ? "" : state.exercises[index].image;
+  applySettings();
+}
+
 function buildPelvicSteps() {
   const routines = state.pelvicExercises
     .map((routine) => ({
@@ -218,17 +287,75 @@ function renderExerciseList() {
 
     const thumb = document.createElement("img");
     thumb.className = "exercise-thumb";
-    thumb.src = exercise.image;
+    thumb.src = exercise.image || fallbackImage(index, exercise.name);
     thumb.alt = `Minh họa ${exercise.name}`;
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = exercise.name;
-    input.setAttribute("aria-label", `Bài tập ${index + 1}`);
-    input.addEventListener("input", () => {
-      state.exercises[index].name = input.value;
-      thumb.alt = `Minh họa ${input.value}`;
+    const fields = document.createElement("div");
+    fields.className = "exercise-fields";
+
+    const nameInput = document.createElement("input");
+    nameInput.className = "exercise-name";
+    nameInput.type = "text";
+    nameInput.value = exercise.name;
+    nameInput.setAttribute("aria-label", `Bài tập ${index + 1}`);
+    nameInput.addEventListener("input", () => {
+      state.exercises[index].name = nameInput.value;
+      thumb.alt = `Minh họa ${nameInput.value}`;
+      if (!state.exercises[index].image || state.exercises[index].image.startsWith("data:")) {
+        state.exercises[index].image = createExerciseImage(nameInput.value, index);
+        thumb.src = state.exercises[index].image;
+      }
     });
+
+    const imageInput = document.createElement("input");
+    imageInput.className = "exercise-image-input";
+    imageInput.type = "url";
+    imageInput.placeholder = "Dán link ảnh hoặc chọn file";
+    imageInput.value = exercise.image?.startsWith("data:") ? "" : exercise.image || "";
+    imageInput.setAttribute("aria-label", `Ảnh cho bài ${index + 1}`);
+    imageInput.addEventListener("change", () => {
+      updateExerciseImage(index, imageInput.value.trim(), thumb, imageInput);
+    });
+
+    const fileLabel = document.createElement("label");
+    fileLabel.className = "file-btn";
+    fileLabel.textContent = "Ảnh";
+    fileLabel.title = "Chọn ảnh từ máy";
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        updateExerciseImage(index, String(reader.result), thumb, imageInput);
+      });
+      reader.readAsDataURL(file);
+    });
+    fileLabel.append(fileInput);
+
+    const imageRow = document.createElement("div");
+    imageRow.className = "exercise-image-row";
+    imageRow.append(imageInput, fileLabel);
+    fields.append(nameInput, imageRow);
+
+    const moveUp = document.createElement("button");
+    moveUp.className = "move-btn";
+    moveUp.type = "button";
+    moveUp.title = "Đưa bài lên trên";
+    moveUp.textContent = "↑";
+    moveUp.disabled = index === 0;
+    moveUp.addEventListener("click", () => swapExercises(index, index - 1));
+
+    const moveDown = document.createElement("button");
+    moveDown.className = "move-btn";
+    moveDown.type = "button";
+    moveDown.title = "Đưa bài xuống dưới";
+    moveDown.textContent = "↓";
+    moveDown.disabled = index === state.exercises.length - 1;
+    moveDown.addEventListener("click", () => swapExercises(index, index + 1));
 
     const remove = document.createElement("button");
     remove.className = "remove-btn";
@@ -242,7 +369,7 @@ function renderExerciseList() {
       applySettings();
     });
 
-    item.append(order, thumb, input, remove);
+    item.append(order, thumb, fields, moveUp, moveDown, remove);
     els.exerciseList.append(item);
   });
 }
@@ -445,11 +572,15 @@ function applySettings() {
   state.workSeconds = clampNumber(els.workSeconds.value, 5, 300, 30);
   state.restSeconds = clampNumber(els.restSeconds.value, 0, 180, 15);
   state.totalMinutes = clampNumber(els.totalMinutes.value, 1, 120, 15);
-  state.exercises = [...els.exerciseList.querySelectorAll("input")]
-    .map((input, index) => ({
-      name: input.value.trim(),
-      image: state.exercises[index]?.image || defaults[index % defaults.length].image
-    }))
+  state.exercises = [...els.exerciseList.querySelectorAll(".exercise-item")]
+    .map((item, index) => {
+      const name = item.querySelector(".exercise-name").value.trim();
+      const typedImage = item.querySelector(".exercise-image-input").value.trim();
+      return {
+        name,
+        image: typedImage || state.exercises[index]?.image || fallbackImage(index, name)
+      };
+    })
     .filter((exercise) => exercise.name);
 
   els.workSeconds.value = state.workSeconds;
@@ -476,9 +607,16 @@ function setMode(mode) {
 }
 
 els.addExerciseBtn.addEventListener("click", () => {
-  const fallback = defaults[state.exercises.length % defaults.length].image;
-  state.exercises.push({ name: "Bài tập mới", image: fallback });
+  const nextDefault = defaults[state.exercises.length % defaults.length];
+  const exists = new Set(state.exercises.map((exercise) => exercise.name));
+  const unusedDefault = defaults.find((exercise) => !exists.has(exercise.name));
+  const nextExercise = unusedDefault || {
+    name: `Bài tập mới ${state.exercises.length + 1}`,
+    image: createExerciseImage(`Bài tập mới ${state.exercises.length + 1}`, state.exercises.length)
+  };
+  state.exercises.push({ ...(nextExercise || nextDefault) });
   renderExerciseList();
+  applySettings();
 });
 
 els.restoreBtn.addEventListener("click", () => {
